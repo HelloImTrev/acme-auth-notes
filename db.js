@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const Sequelize = require('sequelize');
-const { INTEGER } = require('sequelize');
+const { INTEGER, TEXT } = require('sequelize');
 const { STRING } = Sequelize;
 const config = {
   logging: false
@@ -19,7 +19,7 @@ const User = conn.define('user', {
 
 const Note = conn.define('note', {
   txt: {
-    type: STRING,
+    type: TEXT,
   },
   userId: {
     type: INTEGER
@@ -99,6 +99,7 @@ const syncAndSeed = async()=> {
 module.exports = {
   syncAndSeed,
   models: {
-    User
+    User,
+    Note
   }
 };

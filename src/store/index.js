@@ -4,7 +4,12 @@ import logger from 'redux-logger';
 import axios from 'axios';
 
 const notes = (state = [], action)=> {
-  return state;
+  switch(action.type) {
+    case 'GET_NOTES':
+      return action.notes;
+    default:
+      return state;
+  }
 };
 
 const auth = (state = {}, action)=> {
@@ -22,6 +27,22 @@ const logout = ()=> {
   };
 };
 
+const getNotes =  () => {
+  return async(dispatch) => {
+    const token = window.localStorage.getItem('token');
+    if(token) {
+      const res = await axios.get('/api/notes', {
+        headers: {
+          authorization: token
+        }
+      });
+
+      console.log('RES:', res);
+      dispatch({type: 'GET_NOTES', notes: res.data});
+    }
+  }
+}
+
 const signIn = (credentials)=> {
   return async(dispatch)=> {
     let response = await axios.post('/api/auth', credentials);
@@ -30,6 +51,7 @@ const signIn = (credentials)=> {
     return dispatch(attemptLogin());
   }
 };
+
 const attemptLogin = ()=> {
   return async(dispatch)=> {
     const token = window.localStorage.getItem('token');
@@ -42,7 +64,8 @@ const attemptLogin = ()=> {
       dispatch({ type: 'SET_AUTH', auth: response.data });
     }
   }
-}
+};
+
 
 const store = createStore(
   combineReducers({
@@ -52,6 +75,6 @@ const store = createStore(
   applyMiddleware(thunk, logger)
 );
 
-export { attemptLogin, signIn, logout };
+export { attemptLogin, signIn, logout, getNotes };
 
 export default store;

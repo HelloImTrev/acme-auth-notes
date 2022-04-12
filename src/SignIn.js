@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { signIn } from './store';
+import { getNotes, signIn } from './store';
 
 class SignIn extends React.Component{
   constructor(){
@@ -24,6 +24,9 @@ class SignIn extends React.Component{
         username,
         password
       });
+      
+      await this.props.getNotes();
+    
     }
     catch(ex){
       console.log(ex);
@@ -37,7 +40,7 @@ class SignIn extends React.Component{
       <form onSubmit={ onSubmit }>
         { error }
         <input value={ username } onChange={ onChange } name='username'/>
-        <input value={ password } onChange={ onChange } name='password'/>
+        <input value={ password } type="password" onChange={ onChange } name='password'/>
         <button>Sign In</button>
       </form>
     );
@@ -46,7 +49,8 @@ class SignIn extends React.Component{
 
 const mapDispatch = (dispatch)=> {
   return {
-    signIn: (credentials)=> dispatch(signIn(credentials))
+    signIn: (credentials)=> dispatch(signIn(credentials)),
+    getNotes: () => dispatch(getNotes())
 
   };
 };
