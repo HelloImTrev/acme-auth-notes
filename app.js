@@ -31,6 +31,19 @@ app.post('/api/auth', async(req, res, next)=> {
   }
 });
 
+app.post('/api/notes', async (req, res, next) => {
+  try {
+    const user = await User.byToken(req.headers.authorization);
+
+    if(user) {
+      const newNote = await Note.create(req.body);
+      res.status(201).send(newNote);
+    }
+  } catch(e) {
+    next(e);
+  }
+});
+
 app.get('/api/auth', async(req, res, next)=> {
   try {
     res.send(await User.byToken(req.headers.authorization));
