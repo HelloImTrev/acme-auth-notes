@@ -1,12 +1,13 @@
 import React from 'react';
-import { connect, useSelector } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { deleteNote } from './store';
 
 const Notes = () => {
 
   const auth = useSelector(state => state.auth);
   const notes = useSelector(state => state.notes);
-  console.log('STATE:', notes);
+  const dispatch = useDispatch();
 
   return (
     <div>
@@ -16,7 +17,7 @@ const Notes = () => {
         <ul>
           {notes.map(note => {
             return(
-              <li key={note.id}>{note.txt}</li>
+              <li key={note.id}>{note.txt} <button onClick={() => {dispatch(deleteNote(note))}}>Delete</button></li>
             )
           })}
         </ul>

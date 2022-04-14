@@ -8,6 +8,20 @@ app.use('/dist', express.static(path.join(__dirname, 'dist')));
 
 app.get('/', (req, res)=> res.sendFile(path.join(__dirname, 'index.html')));
 
+app.delete('/api/notes/:id', async(req, res, next) => {
+  try {
+    const user = await User.byToken(req.headers.authorization);
+    if(user) {
+      const noteToDelete = await Note.findByPk(req.params.id);
+      await noteToDelete.destroy();
+  
+      res.sendStatus(204);
+    }
+  } catch(e) {
+    next(e);
+  }
+});
+
 app.post('/api/auth', async(req, res, next)=> {
   try {
     res.send({ token: await User.authenticate(req.body)});
@@ -45,8 +59,6 @@ app.get('/api/notes', async(req, res, next) => {
         userId: user.id
       }
     })
-    
-    console.log(notes);
     res.send(notes);
   } catch(e) {
     next(e);
