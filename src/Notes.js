@@ -6,12 +6,16 @@ import { createNote, deleteNote } from './store';
 const Notes = () => {
 
 
-  const [newNote, setNewNote] = useState('');
+  const [noteTxt, setNoteTxt] = useState('');
 
   const auth = useSelector(state => state.auth);
   const notes = useSelector(state => state.notes);
-
   const dispatch = useDispatch();
+
+  const handleSubmit = (evt) => {
+    evt.preventDefault();
+    dispatch(createNote({txt: noteTxt, userId: auth.id}));
+  }
 
   return (
     <div>
@@ -25,11 +29,8 @@ const Notes = () => {
             )
           })}
         </ul>
-        <form onSubmit={() => {
-          dispatch(createNote({txt: newNote, userId: auth.id}))
-          document.querySelector('input').value = '';
-          }}>
-          <input type="text" onChange={ev => {setNewNote(ev.target.value)}}/>
+        <form onSubmit={handleSubmit}>
+          <input type="text" value={noteTxt} onChange={ev => {setNoteTxt(ev.target.value)}} onSubmit={ev => {ev.target.value = ''}}/>
           <button type="submit">Submit</button>
         </form>
       </div>
